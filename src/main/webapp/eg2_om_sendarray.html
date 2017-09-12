@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Start Page</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+        <script>
+            $(document).ready(function() {
+
+
+                $("#submitButton").click(function() {
+                    var javascriptObject = [
+                       parseInt($("#sem1").val(), 10),
+                       parseInt($("#sem2").val(), 10),
+                       parseInt($("#sem3").val(), 10),
+                       parseInt($("#sem4").val(), 10),
+                       parseInt($("#sem5").val(), 10),
+                       parseInt($("#sem6").val(), 10),
+                       parseInt($("#sem7").val(), 10),
+                       parseInt($("#sem8").val(), 10)
+                    ];
+                    alert(JSON.stringify(javascriptObject,null, 4));
+
+                    $.ajax({
+                        type: "POST",
+                        url: "webresources/jsontrials/array",
+                        contentType : "application/json",
+                        data: JSON.stringify(javascriptObject)
+
+                    });
+
+                    return false;
+                });
+
+            });
+        </script>
+    </head>
+    <body>
+        <h1>Object Model JSON Trials</h1>
+       
+        <form method="POST" action="#">
+            <h2>Enter your semester-wise percentage</h2>
+            Sem 1: <input id="sem1" type="number" name="sem1" /><br/>
+            Sem 2: <input id="sem2" type="number" name="sem2" /><br/>
+            Sem 3: <input id="sem3" type="number" name="sem3" /><br/>
+            Sem 4: <input id="sem4" type="number" name="sem4" /><br/>
+            Sem 5: <input id="sem5" type="number" name="sem5" /><br/>
+            Sem 6: <input id="sem6" type="number" name="sem6" /><br/>
+            Sem 7: <input id="sem7" type="number" name="sem7" /><br/>
+            Sem 8: <input id="sem8" type="number" name="sem8" /><br/>
+            
+            <input type="submit" id="submitButton" value="Send">
+
+        </form>
+        <div id="infoArea">
+
+        </div>
+    </body>
+</html>

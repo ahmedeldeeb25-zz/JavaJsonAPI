@@ -1,0 +1,156 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <style type="text/css">
+            #discussion {
+                float: left;
+                width: 67%;
+                background: #fff;
+                margin-top: 0;
+                margin-right: 1.67em;
+                border: 1px solid black;
+                padding-top: 0;
+                padding-right: 1em;
+                padding-bottom: 20px;
+            }
+            #members {
+                float:right;
+                width:25%;
+                padding-left: 2em;
+                margin-top: 0;
+                padding-top: 0;
+                border: 1px solid black;
+            }
+            #privatechat{
+                clear:both;
+                border: 1px solid red;
+                padding-top: 2em;
+            }
+            #infoArea {
+                clear: both;
+                padding-bottom: 1em;
+
+            }
+
+        </style>
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                var ws = new WebSocket("ws://localhost:8080/JavaJsonAPI/groupchatjsonendpoint");
+                // Listen for the connection open event then call the sendMessage function
+                ws.onopen = function(e) {
+                    $("#infoArea").append("<p>Connected</p>");
+                };
+                // Listen for the close connection event
+                ws.onclose = function(e) {
+                    $("#infoArea").append("<p>Disconnected: " + e.reason + "</p>");
+                };
+                // Listen for connection errors
+                ws.onerror = function(e) {
+
+                    $("#infoArea").append("<p>Error</p>");
+                };
+                // Listen for new messages arriving at the client
+                ws.onmessage = function(e) {
+                    var message = JSON.parse(e.data);
+                    switch (message.type) {
+                        case "login":
+                            $("#members").append("<p>" + message.name + "</p>");
+                            $("#selectTo").append("<option value='" + message.name + "'>" + message.name + "</option>");
+                            break;
+                        case "logout":
+                            var paraSelector = "#members p:contains(" + message.name + ")";
+                            $(paraSelector).remove();
+                            var optionSelector = "#selectTo option[value=" + message.name + "]";
+                            $(optionSelector).remove();
+                            break;
+                        case "chat":
+                            $("#discussion").append("<p>" + message.text + "</p>");
+                            break;
+                        case "private":
+                            $("#discussion").append("<p>" + message.text + "</p>");
+                            break;
+                        default:
+
+                            break;
+                    }
+
+                };
+                $("#enterButton").click(function() {
+                    var message = {
+                        type: "login",
+                        name: $("#chatName").val()
+
+                    };
+                    ws.send(JSON.stringify(message));
+                    $(this).attr("disabled", true);
+                });
+                $("#exitButton").click(function() {
+                    var message = {
+                        type: "logout",
+                        name: $("#chatName").val()
+
+                    };
+                    ws.send(JSON.stringify(message));
+
+                });
+                $("#sendButton").click(function() {
+                    var message = {
+                        type: "chat",
+                        text: $("#textToSend").val()
+
+                    };
+                    ws.send(JSON.stringify(message));
+                });
+
+                $("#sendPrivateButton").click(function() {
+                    var message = {
+                        type: "private",
+                        to: $("#selectTo option:selected").val(),
+                        text: $("#privateTextToSend").val()
+
+                    };
+                    ws.send(JSON.stringify(message));
+                });
+
+
+            });
+        </script>
+    </head>
+    <body>
+
+        <header id="login">
+            <h1>GROUP CHAT</h1>
+            Name: <input id="chatName" type="text" name="chatName">
+            <input type="button" id="enterButton" value="Enter">
+            <input type="button" id="exitButton" value="Exit">
+        </header>
+        <section id="discussion">
+            Text to send: <input id="textToSend" type="text" name="textToSend">
+            <input type="button" id="sendButton" value="Send">
+            <h2>Discussion:</h2>
+        </section>
+        <section id="members">
+            <h2>Active Members</h2>
+        </section>
+        <section id="privatechat">
+            <h2>Private Chat</h2>
+            To:
+            <select name="selectTo" id="selectTo">
+                <option >Select User</option>
+            </select>
+            Text to send: <input id="privateTextToSend" type="text" name="privateTextToSend">
+            <input type="button" id="sendPrivateButton" value="Send">
+        </section>
+        <footer id="infoArea">
+
+        </footer>
+    </body>
+</html>

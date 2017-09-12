@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Start Page</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+        <script>
+            $(document).ready(function() {
+
+
+                $("#submitButton").click(function() {
+                    var javascriptObject = {
+                        name: $("#name").val(),
+                        age: parseInt($("#age").val(),10),
+                        address: {
+                            country: $("#country").val(),
+                            state: $("#state").val(),
+                            city: $("#city").val(),
+                            zipcode: parseInt($("#zipcode").val(),10)
+                        }
+                    };
+                    //JSON.stringify transforms a JavaScript Object to JSON Object
+                    alert(JSON.stringify(javascriptObject,null, 4));
+
+                    $.ajax({
+                        type: "POST",
+                        url: "webresources/jsontrials/object",
+                        contentType : "application/json",
+                        data: JSON.stringify(javascriptObject)
+
+                    });
+
+                    return false;
+                });
+
+            });
+        </script>
+    </head>
+    <body>
+        <h1>Object Model JSON Trials</h1>
+       
+        <form method="POST" action="#">
+            Name: <input id="name" type="text" name="name" /><br/>
+            Age: <input id="age" type="number" name="age" /><br/>
+            Address:<br/>
+            Country: <input id="country" type="text" name="country" /><br/>
+            State: <input id="state" type="text" name="state" /><br/>
+            City: <input id="city" type="text" name="city" /><br/>
+            Zipcode: <input id="zipcode" type="number" name="zipcode" /><br/>
+
+            <input type="submit" id="submitButton" value="Send">
+
+        </form>
+        <div id="infoArea">
+
+        </div>
+    </body>
+</html>

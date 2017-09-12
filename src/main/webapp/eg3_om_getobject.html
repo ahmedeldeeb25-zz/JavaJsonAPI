@@ -1,0 +1,45 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+         <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+        <script>
+            $(document).ready(function() {
+
+
+                $("#submitButton").click(function() {
+                   
+                    $.ajax({
+                        type: "GET",
+                        url: "webresources/jsontrials/" + $("#key").val(),
+                        dataType:  "json",
+                        success: function(staff){
+                           //alert(data);
+                           alert(staff.staffid +"=="+staff.name);
+                          
+                            
+                        } 
+
+                    });
+
+                    return false;
+                });
+
+            });
+        </script>
+    </head>
+    <body>
+        <h1>Get Staff Info</h1>
+        <form method="POST" action="#">
+            Staff Key: <input id="key" type="text" name="key"><br>
+            <input type="submit" id="submitButton" value="Send">
+           
+        </form>
+    </body>
+</html>
